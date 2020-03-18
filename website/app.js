@@ -14,11 +14,9 @@ const postData = async (url = '', data = {}) => {
 
     try {
         const newData = await response.json();
-        // console.log(newData);
         return newData
     } catch (error) {
         console.log("error", error);
-        // appropriately handle the error
     }
 }
 
@@ -32,7 +30,6 @@ const getWeather = async (baseURL, zip, key) => {
     const res = await fetch(baseURL + zip + units + key)
     try {
         const data = await res.json();
-        console.log(data)
         return data;
     } catch (error) {
         console.log("error", error);
@@ -40,6 +37,45 @@ const getWeather = async (baseURL, zip, key) => {
     }
 }
 
-// Create a new date instance dynamically with JS
-let d = new Date();
-let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
+/* Add event listener to generate new entry */
+document.getElementById('generate').addEventListener('click', performAction);
+
+function performAction(e){
+  const zip =  document.getElementById('zip').value;
+  getWeather(baseURL, zip, apiKey)
+  .then(function(data){
+
+    /* Build weather journal entry */
+
+    // Get the current date
+    // Create a new date instance dynamically with JS
+    let d = new Date();
+    let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
+
+    // Get the temperature
+    let currentTemp = data.main.temp;
+
+    // Get the user input
+    let feelings =  document.getElementById('feelings').value;
+
+    // Post data to app
+    postData('/', {temperature: currentTemp, date: newDate, feelings: feelings} );
+  })
+  .then(
+      updateUI()
+  )
+}
+
+const updateUI = async () => {
+  const request = await fetch('/all');
+  try{
+    const allData = await request.json();
+    console.log(allData);
+    document.getElementById('date').innerHTML = allData[allData.length - 1].date;
+    document.getElementById('temp').innerHTML = allData[allData.length - 1].temperature;
+    document.getElementById('content').innerHTML = allData[allData.length - 1].feelings;
+
+  }catch(error){
+    console.log("error", error);
+  }
+}
