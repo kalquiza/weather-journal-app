@@ -33,7 +33,6 @@ const getWeather = async (baseURL, zip, key) => {
         return data;
     } catch (error) {
         console.log("error", error);
-        // appropriately handle the error
     }
 }
 
@@ -59,18 +58,17 @@ function performAction(e){
     let feelings =  document.getElementById('feelings').value;
 
     // Post data to app
-    postData('/', {temperature: currentTemp, date: newDate, feelings: feelings} );
+    postData('/', {temperature: currentTemp, date: newDate, feelings: feelings} )
+    .then(
+        updateUI()
+    )
   })
-  .then(
-      updateUI()
-  )
 }
 
 const updateUI = async () => {
   const request = await fetch('/all');
   try{
     const allData = await request.json();
-    console.log(allData);
     document.getElementById('date').innerHTML = allData[allData.length - 1].date;
     document.getElementById('temp').innerHTML = allData[allData.length - 1].temperature;
     document.getElementById('content').innerHTML = allData[allData.length - 1].feelings;
