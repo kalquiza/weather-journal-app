@@ -23,12 +23,13 @@ const postData = async (url = '', data = {}) => {
 }
 
 /* Function to GET data from web API OpenWeatherMap */
-let baseURL = 'api.openweathermap.org/data/2.5/weather?zip='
+let baseURL = 'http://api.openweathermap.org/data/2.5/weather?zip='
 let apiKey = '&appid=5797794e603dad693680b2137143003c';
+let units = '&units=imperial'
 
 const getWeather = async (baseURL, zip, key) => {
 
-    const res = await fetch(baseURL + zip + key)
+    const res = await fetch(baseURL + zip + units + key)
     try {
         const data = await res.json();
         console.log(data)
